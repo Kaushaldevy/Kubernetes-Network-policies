@@ -1,7 +1,7 @@
 The following is a summary of few Network policies that we could use within Kubernetes.
 Most of these polices are obtained from https://github.com/ahmetb/kubernetes-network-policy-recipes locations. But, some of them are customized and new ones are added.
 #	Policy description	Manifest	Description
-1	DENY all traffic to an application	
+1.	DENY all traffic to an application	
 ~~~
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -10,14 +10,13 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: web
-
-      
-ingress: []
+      app: web      
+  ingress: []
 ~~~
 ingress: [] -> This blocks all traffic to the app=web.
 
-2	LIMIT traffic to an application	"kind: NetworkPolicy
+
+2.	LIMIT traffic to an application	"kind: NetworkPolicy
 ```
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -34,7 +33,8 @@ spec:
             app: bookstore"	Allow only from labels having app: bookstore
 ```
 
-3	ALLOW all traffic to an application	"kind: NetworkPolicy
+
+3.	ALLOW all traffic to an application	"kind: NetworkPolicy
 ~~~
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -49,7 +49,8 @@ spec:
 ~~~
 Allow all traffic within default namespace
 
-4	DENY all non-whitelisted traffic to a namespace	"kind: NetworkPolicy
+
+4.	DENY all non-whitelisted traffic to a namespace	"kind: NetworkPolicy
 ~~~
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -65,7 +66,8 @@ podSelector: is empty, this means it will match all the pods. Therefore, the pol
 There are no ingress rules specified. This causes incoming traffic to be dropped to the selected (=all) pods.
 In this case, you can just omit the ingress field, or leave it empty like ingress:
 
-5	DENY all traffic from other namespaces	"kind: NetworkPolicy
+
+5.	DENY all traffic from other namespaces	"kind: NetworkPolicy
 ~~~
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -79,7 +81,8 @@ spec:
     - podSelector: {}
 ~~~
 
-6	ALLOW traffic to an application from all namespaces	"kind: NetworkPolicy
+
+6.	ALLOW traffic to an application from all namespaces	"kind: NetworkPolicy
 ~~~
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -94,7 +97,8 @@ spec:
     - namespaceSelector: {}
 ~~~
 
-7	ALLOW all traffic from a namespace	"kind: NetworkPolicy
+
+7.	ALLOW all traffic from a namespace	"kind: NetworkPolicy
 ~~~
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -109,8 +113,9 @@ spec:
         matchLabels:
           purpose: production
 ~~~
+
       
-8	ALLOW traffic from some pods in another namespace	"kind: NetworkPolicy
+8. ALLOW traffic from some pods in another namespace	"kind: NetworkPolicy
 ~~~
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -131,7 +136,8 @@ spec:
 ~~~
 The following manifest restricts traffic to only pods with label type=monitoring in namespaces labelled team=operations
 
-9	ALLOW traffic from external clients	"kind: NetworkPolicy
+
+9.	ALLOW traffic from external clients	"kind: NetworkPolicy
 ~~~
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -162,8 +168,10 @@ To limit this to port 80 only, can change rule as.
     - port: 80"
 ```
 
-10	ALLOW traffic only to a port of an application	"kind: NetworkPolicy
-```apiVersion: networking.k8s.io/v1
+
+10.	ALLOW traffic only to a port of an application	"kind: NetworkPolicy
+```
+apiVersion: networking.k8s.io/v1
 metadata:
   name: api-allow-5000
 spec:
@@ -180,7 +188,8 @@ spec:
 ```
 NOTE: Network Policies will not know the port numbers you exposed the application, such as 8001 and 5001. This is because they control inter-pod traffic and when you expose Pod as Service, ports are remapped like above. Therefore, you need to use the Pod port numbers (such as 8000 and 5000) in the NetworkPolicy specification. An alternative less error prone is to refer to the port names (such as metrics and http).
 
-11	ALLOW traffic from apps using multiple selectors	"kind: NetworkPolicy
+
+11.	ALLOW traffic from apps using multiple selectors	"kind: NetworkPolicy
 ```
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -213,7 +222,8 @@ catalog 	    app=inventory, role=web
 
 The above  NetworkPolicy will allow traffic from only these microservices.
 
-12	DENY egress traffic from an application	"apiVersion: networking.k8s.io/v1
+
+12.	DENY egress traffic from an application	"apiVersion: networking.k8s.io/v1
 ```
 kind: NetworkPolicy
 metadata:
@@ -228,7 +238,8 @@ spec:
 ```
 You can drop this field (egress) altogether and have the same effect.
 
-13	DENY all non-whitelisted traffic from a namespace	"kind: NetworkPolicy
+
+13.	DENY all non-whitelisted traffic from a namespace	"kind: NetworkPolicy
 ```
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -243,7 +254,8 @@ spec:
 Use Case: This is a fundamental policy, blocking all outgoing (egress) traffic from a namespace by default (including DNS resolution). 
 After deploying this, you can deploy Network Policies that allow the specific outgoing traffic.
 
-14	DENY external egress traffic	"apiVersion: networking.k8s.io/v1
+
+14.	DENY external egress traffic	"apiVersion: networking.k8s.io/v1
 ```
 kind: NetworkPolicy
 metadata:
@@ -268,10 +280,9 @@ spec:
       - port: 53
         protocol: TCP
 ```
-"This policy applies to pods with app=foo and in Egress (outbound) direction.
+This policy applies to pods with app=foo and in the Egress (outbound) direction.
 Similar to DENY egress traffic from an application example, this policy allows all outbound traffic on ports 53/udp and 53/tcp to the kube-dns pods for DNS resolution.
-to: specifies a namespaceSelector which matches kubernetes.io/metadata.
+to: specifies a namespaceSelector that matches kubernetes.io/metadata.
 name: kube-system and a podSelector which matches k8s-app: kube-dns. 
 This will select only the kube-dns pods in the kube-system namespace, so the outbound traffic to the kube-dns pods in the kube-system namespace will be allowed.
-And since they are not listed, traffic to the IP addresses outside the cluster are denied."
-![image](https://github.com/Kaushaldevy/Kubernetes-Network-policies/assets/18143604/256966f8-21cf-437a-8590-7c121cb253b8)
+And since they are not listed, traffic to the IP addresses outside the cluster is denied.
