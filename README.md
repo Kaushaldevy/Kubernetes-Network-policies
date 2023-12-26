@@ -1,5 +1,8 @@
-The following is a summary of few Network policies that we could use within Kubernetes.
-Most of these polices are obtained from https://github.com/ahmetb/kubernetes-network-policy-recipes locations. But, some of them are customized and new ones are added.
+The following is a summary of a few Network policies that we could use within Kubernetes.
+Most of these policies are obtained from https://github.com/ahmetb/kubernetes-network-policy-recipes locations. But, some of them are customized and new ones are added.
+
+Later, have also added the etcd backup/restore commands to the same repo for convenience.
+
 #	Policy description	Manifest	Description
 1.	DENY all traffic to an application	
 ~~~
